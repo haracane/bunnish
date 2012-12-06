@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require "bunnish"
+
+command = ARGV.shift
+
+case command
+when "count"
+  Bunnish::Count.run(ARGV)
+when "help"
+  Bunnish::Help.run(ARGV)
+when "publish"
+  Bunnish::Publish.run(ARGV)
+when "status"
+  Bunnish::Status.run(ARGV)
+when "subscribe"
+  Bunnish::Subscribe.run(ARGV)
+end
