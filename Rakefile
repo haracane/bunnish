@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "bunnish"
   gem.homepage = "http://github.com/haracane/bunnish"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Command for AMQP access to Message Queue.}
+  gem.description = %Q{Command for AMQP access to Message Queue.}
   gem.email = "haracane@gmail.com"
   gem.authors = ["Kenji Hara"]
   # dependencies defined in Gemfile
