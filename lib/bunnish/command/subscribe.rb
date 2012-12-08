@@ -1,4 +1,4 @@
-module Bunnish
+module Bunnish::Command
   module Subscribe
     def self.output_log(streams, message)
       streams.each do |stream|
@@ -29,7 +29,6 @@ module Bunnish
       user = params[:user]
       password = params[:password]
       durable = params[:durable]
-      exchange_name = params[:exchange_name]
       unit_size = params[:unit_size] || 10000
       raise_exception_flag = params[:raise_exception_flag]
       ack = params[:ack]
@@ -85,7 +84,7 @@ module Bunnish
         if message_max <= 0
           self.output_log [error_stream, log_stream],  Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} finished")
           bunny.stop
-          exit 0
+          return 0
         end
       else
         self.output_log [error_stream, log_stream],  Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} subscribe from #{queue_name}(#{remain_count} messages, #{consumer_count} consumers)")
@@ -143,6 +142,8 @@ module Bunnish
       
       # Close client
       bunny.stop
+      
+      return 0
     end
   end
 end

@@ -1,4 +1,4 @@
-module Bunnish
+module Bunnish::Command
   module Publish
     def self.output_log(streams, message)
       streams.each do |stream|
@@ -22,9 +22,6 @@ module Bunnish
     end
     
     def self.run(argv, input_stream=$stdin, output_stream=$stdout, error_stream=$stderr)
-      input_stream ||= $stdin
-      output_stream ||= $stdout
-      error_stream ||= $stderr
       
       params = Bunnish.parse_opts(argv)
       
@@ -62,7 +59,7 @@ module Bunnish
         end
       end
        
-      fanout_flag = (exchange_name != '' && 1 < queue_name_list.size)
+      fanout_flag = (exchange_name && exchange_name != '' && 1 < queue_name_list.size)
       
       bunny = nil
       direct_exchange = nil
@@ -171,6 +168,8 @@ module Bunnish
       log_streams.values.each do |log_stream|
         log_stream.close
       end
+      
+      return 0
     end
 
   end

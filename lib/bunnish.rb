@@ -1,11 +1,5 @@
 require "rubygems"
 require "bunny"
-require "bunnish/count"
-require "bunnish/help"
-require "bunnish/publish"
-require "bunnish/status"
-require "bunnish/subscribe"
-
 
 module Bunnish
   def self.parse_opts(argv)
@@ -17,7 +11,7 @@ module Bunnish
     ack = true
     raise_exception_flag = false
     
-    exchange_name = ''
+    exchange_name = nil
     delimiter = nil
 
     consumer_tag = nil
@@ -47,7 +41,7 @@ module Bunnish
       when '-u'
         user = argv.shift
       when '-P'
-        password = argv.shift.to_i
+        password = argv.shift
       when '--ack'
         ack = (argv.shift == 't')
       when '--delimiter'
@@ -68,7 +62,7 @@ module Bunnish
       when '--raise-exception'
         raise_exception_flag = true
       when '--consumer-tag'
-        consumer_tag = argv.shift.to_i
+        consumer_tag = argv.shift
       when '--timeout'
         timeout = argv.shift.to_i
       when '--exclusive'
@@ -118,3 +112,5 @@ module Bunnish
     
   end
 end
+
+require "bunnish/command"

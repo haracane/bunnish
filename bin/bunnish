@@ -4,15 +4,24 @@ require "bunnish"
 
 command = ARGV.shift
 
+exit_code = 0
+
 case command
 when "count"
-  Bunnish::Count.run(ARGV)
+  exit_code = Bunnish::Command::Count.run(ARGV) || 0
+when "delete"
+  exit_code = Bunnish::Command::Delete.run(ARGV) || 0
 when "help"
-  Bunnish::Help.run(ARGV)
+  exit_code = Bunnish::Command::Help.run(ARGV) || 0
 when "publish"
-  Bunnish::Publish.run(ARGV)
+  exit_code = Bunnish::Command::Publish.run(ARGV) || 0
 when "status"
-  Bunnish::Status.run(ARGV)
+  exit_code = Bunnish::Command::Status.run(ARGV) || 0
 when "subscribe"
-  Bunnish::Subscribe.run(ARGV)
+  exit_code = Bunnish::Command::Subscribe.run(ARGV) || 0
+else
+  STDERR.puts "invalid command: '#{command}'"
+  exit_code = 1
 end
+
+exit exit_code
