@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "bunnish"
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kenji Hara"]
-  s.date = "2012-12-06"
+  s.date = "2012-12-08"
   s.description = "Command for AMQP access to Message Queue."
   s.email = "haracane@gmail.com"
   s.executables = ["bunnish"]
@@ -26,19 +26,29 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "bin/bunnish",
+    "bunnish.gemspec",
     "lib/bunnish.rb",
-    "lib/bunnish/count.rb",
-    "lib/bunnish/help.rb",
-    "lib/bunnish/publish.rb",
-    "lib/bunnish/status.rb",
-    "lib/bunnish/subscribe.rb",
-    "spec/bunnish_spec.rb",
+    "lib/bunnish/command.rb",
+    "lib/bunnish/command/count.rb",
+    "lib/bunnish/command/delete.rb",
+    "lib/bunnish/command/help.rb",
+    "lib/bunnish/command/publish.rb",
+    "lib/bunnish/command/status.rb",
+    "lib/bunnish/command/subscribe.rb",
+    "spec/bin/bunnish_spec.rb",
+    "spec/lib/bunnish/command/count_spec.rb",
+    "spec/lib/bunnish/command/delete_spec.rb",
+    "spec/lib/bunnish/command/help_spec.rb",
+    "spec/lib/bunnish/command/publish_spec.rb",
+    "spec/lib/bunnish/command/status_spec.rb",
+    "spec/lib/bunnish/command/subscribe_spec.rb",
+    "spec/lib/bunnish_spec.rb",
     "spec/spec_helper.rb"
   ]
   s.homepage = "http://github.com/haracane/bunnish"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.21"
+  s.rubygems_version = "1.8.17"
   s.summary = "Command for AMQP access to Message Queue."
 
   if s.respond_to? :specification_version then

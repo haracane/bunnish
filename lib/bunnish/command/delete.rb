@@ -17,7 +17,6 @@ module Bunnish::Command
       password = params[:password]
       durable = params[:durable]
 
-      STDERR.puts argv
       queue_name_list = argv.shift
       
       queue_name_list = queue_name_list.split(/[, \r\n]+/) if queue_name_list
