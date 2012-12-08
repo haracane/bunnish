@@ -1,9 +1,6 @@
-module Bunnish
+module Bunnish::Command
   module Status
     def self.run(argv, input_stream=$stdin, output_stream=$stdout, error_stream=$stderr)
-      input_stream ||= $stdin
-      output_stream ||= $stdout
-      error_stream ||= $stderr
       
       params = Bunnish.parse_opts(argv)
       
@@ -81,14 +78,12 @@ module Bunnish
       rescue Exception=>e
         message = Time.now.strftime("[%Y-%m-%d %H:%M:%S](EXCEPTION)#{e.message}(#{e.class.name}): #{e.backtrace.map{|s| "  #{s}"}.join("\n")}")
         output_stream.puts message
-        exit 1
+        return 1
       end
       
-      exit 1 if error_flag
-      exit 2 if warn_flag
-      exit 0
-
-      
+      return 1 if error_flag
+      return 2 if warn_flag
+      return 0
     end
   end
 end

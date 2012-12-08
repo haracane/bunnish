@@ -1,9 +1,6 @@
-module Bunnish
+module Bunnish::Command
   module Count
     def self.run(argv, input_stream=$stdin, output_stream=$stdout, error_stream=$stderr)
-      input_stream ||= $stdin
-      output_stream ||= $stdout
-      error_stream ||= $stderr
       
       params = Bunnish.parse_opts(argv)
       
