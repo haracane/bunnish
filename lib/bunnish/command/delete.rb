@@ -16,6 +16,8 @@ module Bunnish::Command
       user = params[:user]
       password = params[:password]
       durable = params[:durable]
+      
+      log_label = params[:log_label]
 
       queue_name_list = argv.shift
       
@@ -34,16 +36,16 @@ module Bunnish::Command
         queue = bunny.queue(queue_name, :durable=>durable)
 
         if queue.nil? then
-          error_stream.puts Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO) #{queue_name} does not exist")
+          Bunnish.logger.info "#{log_label} #{queue_name} does not exist"
           next
         end
 
         result = queue.delete
 
         if result == :delete_ok then
-          error_stream.puts Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO) deleted #{queue_name}")
+          Bunnish.logger.info "#{log_label} deleted #{queue_name}"
         else
-          error_stream.puts Time.now.strftime("[%Y-%m-%d %H:%M:%S](ERROR) failed to #{queue_name}")
+          Bunnish.logger.warn "#{log_label} failed to delete #{queue_name}"
           exit_code = 1
         end
       end

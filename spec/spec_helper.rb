@@ -17,5 +17,14 @@ module Bunnish
   BIN_DIR = "#{BUNNISH_HOME}/bin"
   LIB_DIR = "#{BUNNISH_HOME}/lib"
   RUBY_CMD = "/usr/bin/env ruby -I #{LIB_DIR}"
-  REDIRECT = {:stderr=>"/dev/null"}
+  REDIRECT = {:stderr=>"2> /dev/null"}
+end
+
+Bunnish.logger = Logger.new(STDERR)
+if File.exist?('/tmp/bunnish.debug') then
+  Bunnish.logger.level = Logger::DEBUG
+  Bunnish::REDIRECT[:stderr] = nil
+else
+  Bunnish.logger.level = Logger::ERROR
+  Bunnish::REDIRECT[:stderr] = "2> /dev/null"
 end

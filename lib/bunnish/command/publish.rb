@@ -1,27 +1,6 @@
 module Bunnish::Command
   module Publish
-    def self.output_log(streams, message)
-      streams.each do |stream|
-        if stream then
-          stream.puts message
-          stream.flush
-        end
-      end
-    end
-    
-    def self.output_publish_log(streams, queue, count, log_label)
-      message_count = '?'
-      consumer_count = '?'
-      begin
-        message_count = queue.status[:message_count]
-        consumer_count = queue.status[:consumer_count]
-      rescue Exception=>e
-      end
-    
-      self.output_log streams, Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} published #{count} messages into #{queue.name}(#{message_count} messages, #{consumer_count} consumers)")
-    end
-    
-    def self.run(argv, input_stream=$stdin, output_stream=$stdout, error_stream=$stderr)
+    def self.run(argv, input_stream=$stdin, output_stream=$stdout)
       
       params = Bunnish.parse_opts(argv)
       
@@ -55,60 +34,44 @@ module Bunnish::Command
         if log_path then
           log_stream = open(log_path, "a")
           log_streams[queue_name] = log_stream
-          error_stream.puts Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} output log into #{log_path}")
+          Bunnish.logger.info "#{log_label} output log into #{log_path}"
         end
       end
        
       fanout_flag = (exchange_name && exchange_name != '' && 1 < queue_name_list.size)
       
       bunny = nil
-      direct_exchange = nil
       
       publish_flag = false
       
+      exchange_list = []
+      
       begin
-        direct_exchange_list = nil
-        
         # publish message to exchange
         count = 0
         
         lines = []
         
-        
         while line = input_stream.gets do
           if bunny == nil then
             bunny = Bunny.new(:logging => false, :spec => '09', :host=>host, :port=>port, :user=>user, :pass=>password)
-            
             # start a communication session with the amqp server
             bunny.start
-          
             # create/get exchange  
             if fanout_flag then
-              error_stream.puts Time.now.strftime("[%Y-%m-%d %H:%M:%S]") + "(INFO)#{log_label} create fanout exchange '#{exchange_name}'"
-              fanout_exchange = bunny.exchange(exchange_name, :type=>:fanout, :persistent=>durable)
-              queue_name_list.each do |queue_name|
-              # create/get queue
-                error_stream.puts Time.now.strftime("[%Y-%m-%d %H:%M:%S]") + "(INFO)#{log_label} create queue '#{queue_name}'"
-                queue = bunny.queue(queue_name, :durable=>durable)
-                error_stream.puts Time.now.strftime("[%Y-%m-%d %H:%M:%S]") + "(INFO)#{log_label} bind queue '#{queue_name}' to fanout exchange '#{exchange_name}'"
-                queue.bind(fanout_exchange)
-                self.output_log [error_stream, log_streams[queue_name]], Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} publish to #{queue_name}(#{queue.status[:message_count]} messages, #{queue.status[:consumer_count]} consumers)")
-              end
+              fanout_exchange = Bunnish::Core::Publish.create_fanout_exchange(bunny, queue_name_list, log_streams, params)
+              exchange_list.push fanout_exchange
             else
-              direct_exchange_list = queue_name_list.map { |queue_name|
-      
-                error_stream.puts Time.now.strftime("[%Y-%m-%d %H:%M:%S]") + "(INFO)#{log_label} create direct exchange '#{queue_name}'"
-                direct_exchange = bunny.exchange(queue_name, :type=>:direct)
-      
-                error_stream.puts Time.now.strftime("[%Y-%m-%d %H:%M:%S]") + "(INFO)#{log_label} create queue '#{queue_name}'"
-                queue = bunny.queue(queue_name, :durable=>durable)
-      
-                error_stream.puts Time.now.strftime("[%Y-%m-%d %H:%M:%S]") + "(INFO)#{log_label} bind queue '#{queue_name}' to direct exchange '#{queue_name}'"
-                queue.bind(direct_exchange)
-                self.output_log [error_stream, log_streams[queue_name]], Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} publish to #{queue_name}(#{queue.status[:message_count]} messages, #{queue.status[:consumer_count]} consumers)")
-      
-                direct_exchange
+              direct_exchange_list = queue_name_list.map {|queue_name|
+                Bunnish::Core::Publish.create_direct_exchange(bunny, queue_name, log_streams, params)
               }
+              exchange_list = direct_exchange_list
+            end
+            
+            queue_name_list.each do |queue_name|
+              queue = bunny.queue(queue_name, :durable=>durable)
+              message = "#{log_label} publish to #{queue_name}(#{queue.status[:message_count]} messages, #{queue.status[:consumer_count]} consumers)"
+              Bunnish::Core::Common.output_log [log_streams[queue_name]], "INFO", message
             end
           end
         
@@ -121,13 +84,10 @@ module Bunnish::Command
             message = line
           end
         
-          if fanout_flag then
-            fanout_exchange.publish(message)
-          else
-            direct_exchange_list.each do |direct_exchange|
-              direct_exchange.publish(message)
-            end
+          exchange_list.each do |exchange|
+            exchange.publish(message)
           end
+            
           count += 1
           
           if unit_size <= count then
@@ -135,7 +95,7 @@ module Bunnish::Command
             queue_name_list.each do |queue_name|
               queue = bunny.queue(queue_name, :durable=>durable)
               log_stream = log_streams[queue_name]
-              self.output_publish_log [error_stream, log_stream], queue, count, log_label
+              Bunnish::Core::Publish.output_publish_log [log_stream], queue, count, log_label
             end
             count = 0
           end
@@ -147,9 +107,9 @@ module Bunnish::Command
           log_stream = log_streams[queue_name]
           if bunny then
             queue = bunny.queue(queue_name, :durable=>durable)
-            self.output_publish_log [error_stream, log_stream], queue, count, log_label if 0 < count || !publish_flag
+            Bunnish::Core::Publish.output_publish_log [log_stream], queue, count, log_label if 0 < count || !publish_flag
           else
-            self.output_log [error_stream, log_stream], Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} no input for #{queue_name}")
+            Bunnish::Core::Common.output_log [log_stream], "INFO", "#{log_label} no input for #{queue_name}"
           end
         end
         
@@ -160,8 +120,8 @@ module Bunnish::Command
           bunny.stop if bunny
           raise e if raise_exception_flag
         else
-          message = Time.now.strftime("[%Y-%m-%d %H:%M:%S](EXCEPTION)#{log_label} #{e.message}(#{e.class.name}): #{e.backtrace.map{|s| "  #{s}"}.join("\n")}")
-            self.output_log(([error_stream] + log_streams.values), message)
+          message = "#{log_label} #{e.message}(#{e.class.name}): #{e.backtrace.map{|s| "  #{s}"}.join("\n")}"
+          Bunnish::Core::Common.output_log(log_streams.values, "EXCEPTION", message)
         end
       end
       
