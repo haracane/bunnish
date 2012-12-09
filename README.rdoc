@@ -28,9 +28,27 @@ Publish messages:
  [2012-12-08 20:33:33](INFO) publish to test-queue(0 messages, 0 consumers)
  [2012-12-08 20:33:33](INFO) published 3 messages into test-queue(3 messages, 0 consumers)
 
+Publish messages to multiple queues:
+ $ cat messages.txt | bunnish publish -h mq-server -p 5672 test-queue-1,test-queue-2
+ [2012-12-09 21:10:21](INFO) create direct exchange 'test-queue-1'
+ [2012-12-09 21:10:21](INFO) create queue 'test-queue-1'
+ [2012-12-09 21:10:21](INFO) bind queue 'test-queue-1' to direct exchange 'test-queue-1'
+ [2012-12-09 21:10:21](INFO) create direct exchange 'test-queue-2'
+ [2012-12-09 21:10:21](INFO) create queue 'test-queue-2'
+ [2012-12-09 21:10:21](INFO) bind queue 'test-queue-2' to direct exchange 'test-queue-2'
+ [2012-12-09 21:10:21](INFO) publish to test-queue-1(0 messages, 0 consumers)
+ [2012-12-09 21:10:21](INFO) publish to test-queue-2(0 messages, 0 consumers)
+ [2012-12-09 21:10:21](INFO) published 3 messages into test-queue-1(3 messages, 0 consumers)
+ [2012-12-09 21:10:21](INFO) published 3 messages into test-queue-2(3 messages, 0 consumers)
+
 Check queue status:
  $ bunnish status -h mq-server -p 5672 test-queue
  test-queue : 3 messages, 0 consumers
+
+Check multiple queue status:
+ $ bunnish status -h mq-server -p 5672 test-queue-1,test-queue-2
+ test-queue-1 : 3 messages, 0 consumers
+ test-queue-2 : 3 messages, 0 consumers
 
 Get queue count:
  $ bunnish count -h mq-server -p 5672 test-queue
@@ -46,6 +64,15 @@ Subscribe from queue:
  $ bunnish status -h mq-server -p 5672 test-queue
  1 queue is empty:
    test-queue
+
+Delete queue:
+ $ bunnish delete -h mq-server -p 5672 test-queue
+ [2012-12-09 21:13:10](INFO) deleted test-queue
+
+Delete multiple queues:
+ $ bunnish delete -h mq-server -p 5672 test-queue-1,test-queue-2
+ [2012-12-09 21:12:34](INFO) deleted test-queue-1
+ [2012-12-09 21:12:34](INFO) deleted test-queue-2
 
 Read help:
  $ bunnish help
