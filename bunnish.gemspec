@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "bunnish"
-  s.version = "0.0.3"
+  s.version = "0.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kenji Hara"]
-  s.date = "2012-12-08"
+  s.date = "2012-12-09"
   s.description = "Command for AMQP access to Message Queue."
   s.email = "haracane@gmail.com"
   s.executables = ["bunnish"]
@@ -35,6 +35,10 @@ Gem::Specification.new do |s|
     "lib/bunnish/command/publish.rb",
     "lib/bunnish/command/status.rb",
     "lib/bunnish/command/subscribe.rb",
+    "lib/bunnish/core.rb",
+    "lib/bunnish/core/common.rb",
+    "lib/bunnish/core/publish.rb",
+    "lib/bunnish/core/subscribe.rb",
     "spec/bin/bunnish_spec.rb",
     "spec/lib/bunnish/command/count_spec.rb",
     "spec/lib/bunnish/command/delete_spec.rb",
