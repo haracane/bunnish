@@ -1,27 +1,6 @@
 module Bunnish::Command
   module Subscribe
-    def self.output_log(streams, message)
-      streams.each do |stream|
-        if stream then
-          stream.puts message
-          stream.flush
-        end
-      end
-    end
-    
-    def self.output_subscribe_log(streams, queue, count, log_label)
-      message_count = '?'
-      consumer_count = '?'
-      begin
-        message_count = queue.status[:message_count]
-        consumer_count = queue.status[:consumer_count]
-      rescue Exception=>e
-      end
-    
-      self.output_log streams, Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} subscribed #{count} messages from #{queue.name}(#{message_count} messages, #{consumer_count} consumers)")
-    end
-    
-    def self.run(argv, input_stream=$stdin, output_stream=$stdout, error_stream=$stderr)
+    def self.run(argv, input_stream=$stdin, output_stream=$stdout)
       params = Bunnish.parse_opts(argv)
       
       host = params[:host]
@@ -51,7 +30,7 @@ module Bunnish::Command
       
       if log_path
         log_stream = open(log_path, "a")
-        error_stream.puts Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} output log into #{log_path}")
+        Bunnish.logger.info "#{log_label} output log into #{log_path}"
       end
       
       exchange_name = queue_name
@@ -79,15 +58,15 @@ module Bunnish::Command
       end
       
       if message_max 
-        self.output_log [error_stream, log_stream],  Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} subscribe #{message_max} messages from #{queue_name}(#{remain_count} messages, #{consumer_count} consumers)")
+        Bunnish::Core::Common.output_log [log_stream], "INFO", "#{log_label} subscribe #{message_max} messages from #{queue_name}(#{remain_count} messages, #{consumer_count} consumers)"
       
         if message_max <= 0
-          self.output_log [error_stream, log_stream],  Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} finished")
+          Bunnish::Core::Common.output_log [log_stream], "INFO", "#{log_label} finished"
           bunny.stop
           return 0
         end
       else
-        self.output_log [error_stream, log_stream],  Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} subscribe from #{queue_name}(#{remain_count} messages, #{consumer_count} consumers)")
+        Bunnish::Core::Common.output_log [log_stream], "INFO", "#{log_label} subscribe from #{queue_name}(#{remain_count} messages, #{consumer_count} consumers)"
       end
       
       if !exchange_name.nil? && exchange_name != '' then
@@ -101,7 +80,7 @@ module Bunnish::Command
       subscribe_flag = false
       
       if remain_count == 0 then
-        self.output_log [error_stream, log_stream], Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} no messages in #{queue_name}(#{remain_count} messages, #{consumer_count} consumers)")
+        Bunnish::Core::Common.output_log [log_stream], "INFO", "#{log_label} no messages in #{queue_name}(#{remain_count} messages, #{consumer_count} consumers)"
       else
         # subscribe to queue
         begin
@@ -116,7 +95,7 @@ module Bunnish::Command
               total_count += 1
               if unit_size <= count then
                 subscribe_flag = true
-                self.output_log [error_stream, log_stream], Time.now.strftime("[%Y-%m-%d %H:%M:%S](INFO)#{log_label} subscribed #{count} messages from #{queue_name}")
+                Bunnish::Core::Common.output_log [log_stream], "INFO", "#{log_label} subscribed #{count} messages from #{queue_name}"
                 count = 0
                 break if min_size && remain_count <= total_count + min_size
               end
@@ -127,14 +106,14 @@ module Bunnish::Command
             bunny.stop if bunny
             raise e if raise_exception_flag
           else
-            self.output_log [error_stream, log_stream],  Time.now.strftime("[%Y-%m-%d %H:%M:%S](EXCEPTION)#{log_label} #{e.message}(#{e.class.name}): #{e.backtrace.map{|s| "  #{s}"}.join("\n")}")
+            Bunnish::Core::Common.output_log [log_stream],  "EXCEPTION", "#{log_label} #{e.message}(#{e.class.name}): #{e.backtrace.map{|s| "  #{s}"}.join("\n")}"
           end
         end
       end
       
       subscribe_flag = true if 0 < count
       
-      self.output_subscribe_log [error_stream, log_stream], queue, count, log_label # if 0 < count || subscribe_flag
+      Bunnish::Core::Subscribe.output_subscribe_log [log_stream], queue, count, log_label # if 0 < count || subscribe_flag
       
       if log_stream then
         log_stream.close
