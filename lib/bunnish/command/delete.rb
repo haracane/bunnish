@@ -22,8 +22,8 @@ module Bunnish::Command
       queue_name_list = argv.shift
 
       if queue_name_list.nil?
-        Bunnish.logger.error("queue-name is not set")
-        return 1
+        Bunnish.logger.info("queue-name is not set")
+        return 0
       end
       
       queue_name_list = queue_name_list.split(/[, \r\n]/)
