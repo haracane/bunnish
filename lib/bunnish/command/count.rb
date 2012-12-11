@@ -10,7 +10,12 @@ module Bunnish::Command
       password = params[:password]
       durable = params[:durable]
       
-      queue_name = argv[0]
+      queue_name = argv.shift
+
+      if queue_name.nil?
+        Bunnish.logger.error("queue-name is not set")
+        return 1
+      end
       
       bunny = Bunny.new(:logging => false, :spec => '09', :host=>host, :port=>port, :user=>user, :pass=>password)
       

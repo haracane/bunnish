@@ -17,7 +17,15 @@ module Bunnish::Command
       warn_flag = false
       error_flag = false
       
-      queue_name_list = argv.shift.split(/[, ]+/)
+      queue_name_list = argv.shift
+
+      if queue_name_list.nil?
+        Bunnish.logger.error("queue-name is not set")
+        return 1
+      end
+      
+      queue_name_list = queue_name_list.split(/[, \r\n]/)
+      queue_name_list.delete('')
       
       begin
         bunny = Bunny.new(:logging => false, :spec => '09', :host=>host, :port=>port, :user=>user, :pass=>password)

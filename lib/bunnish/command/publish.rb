@@ -19,7 +19,14 @@ module Bunnish::Command
       log_path = params[:log_path]
       
       
-      queue_name_list = argv.shift.split(/[, \r\n]/)
+      queue_name_list = argv.shift
+
+      if queue_name_list.nil?
+        Bunnish.logger.error("queue-name is not set")
+        return 1
+      end
+      
+      queue_name_list = queue_name_list.split(/[, \r\n]/)
       queue_name_list.delete('')
       
       if delimiter
