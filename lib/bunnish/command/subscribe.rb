@@ -24,6 +24,11 @@ module Bunnish::Command
       
       queue_name = argv.shift
       
+      if queue_name.nil?
+        Bunnish.logger.error("queue-name is not set")
+        return 1
+      end
+      
       log_stream = nil
       
       log_path = "#{log_dir}/#{queue_name.gsub(/[\/]/, "_")}.log" if log_dir
@@ -37,9 +42,11 @@ module Bunnish::Command
       
       bunny = Bunny.new(:logging => false, :spec => '09', :host=>host, :port=>port, :user=>user, :pass=>password)
       
-      
       # start a communication session with the amqp server
       bunny.start
+      
+      # 
+      bunny.qos(:prefetch_count => 1)
       
       # create/get queue
       queue = bunny.queue(queue_name, :durable=>durable)
@@ -66,7 +73,7 @@ module Bunnish::Command
           return 0
         end
       else
-        Bunnish::Core::Common.output_log [log_stream], "INFO", "#{log_label} subscribe from #{queue_name}(#{remain_count} messages, #{consumer_count} consumers)"
+        Bunnish::Core::Common.output_log [log_stream], "INFO", "#{log_label} subscribe to #{queue_name}(#{remain_count} messages, #{consumer_count} consumers)"
       end
       
       if !exchange_name.nil? && exchange_name != '' then
