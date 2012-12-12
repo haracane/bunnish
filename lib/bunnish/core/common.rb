@@ -79,6 +79,8 @@ module Bunnish::Core
           warn_size = argv.shift.to_i
         when '--error'
           error_size = argv.shift.to_i
+        when '--verbose'
+          verbose_flag = true
         else 
           next_argv.push val
         end
