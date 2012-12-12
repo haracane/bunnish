@@ -21,7 +21,7 @@ Publish messages:
  foo
  bar
  baz
- $ cat messages.txt | bunnish publish -h mq-server -p 5672 test-queue
+ $ cat messages.txt | bunnish publish -h mq-server -p 5672 test-queue --verbose
  [2012-12-08 20:33:33](INFO) create direct exchange 'test-queue'
  [2012-12-08 20:33:33](INFO) create queue 'test-queue'
  [2012-12-08 20:33:33](INFO) bind queue 'test-queue' to direct exchange 'test-queue'
@@ -29,7 +29,7 @@ Publish messages:
  [2012-12-08 20:33:33](INFO) published 3 messages into test-queue(3 messages, 0 consumers)
 
 Publish messages to multiple queues:
- $ cat messages.txt | bunnish publish -h mq-server -p 5672 test-queue-1,test-queue-2
+ $ cat messages.txt | bunnish publish -h mq-server -p 5672 test-queue-1,test-queue-2 --verbose
  [2012-12-09 21:10:21](INFO) create direct exchange 'test-queue-1'
  [2012-12-09 21:10:21](INFO) create queue 'test-queue-1'
  [2012-12-09 21:10:21](INFO) bind queue 'test-queue-1' to direct exchange 'test-queue-1'
@@ -42,11 +42,11 @@ Publish messages to multiple queues:
  [2012-12-09 21:10:21](INFO) published 3 messages into test-queue-2(3 messages, 0 consumers)
 
 Check queue status:
- $ bunnish status -h mq-server -p 5672 test-queue
+ $ bunnish status -h mq-server -p 5672 test-queue --verbose
  test-queue : 3 messages, 0 consumers
 
 Check multiple queue status:
- $ bunnish status -h mq-server -p 5672 test-queue-1,test-queue-2
+ $ bunnish status -h mq-server -p 5672 test-queue-1,test-queue-2 --verbose
  test-queue-1 : 3 messages, 0 consumers
  test-queue-2 : 3 messages, 0 consumers
 
@@ -55,7 +55,7 @@ Get queue count:
  3
 
 Subscribe from queue:
- $ bunnish subscribe -h mq-server -p 5672 test-queue
+ $ bunnish subscribe -h mq-server -p 5672 test-queue --verbose
  [2012-12-08 20:35:57](INFO) subscribe from test-queue(3 messages, 0 consumers)
  foo
  bar
@@ -66,11 +66,11 @@ Subscribe from queue:
    test-queue
 
 Delete queue:
- $ bunnish delete -h mq-server -p 5672 test-queue
+ $ bunnish delete -h mq-server -p 5672 test-queue --verbose
  [2012-12-09 21:13:10](INFO) deleted test-queue
 
 Delete multiple queues:
- $ bunnish delete -h mq-server -p 5672 test-queue-1,test-queue-2
+ $ bunnish delete -h mq-server -p 5672 test-queue-1,test-queue-2 --verbose
  [2012-12-09 21:12:34](INFO) deleted test-queue-1
  [2012-12-09 21:12:34](INFO) deleted test-queue-2
 
