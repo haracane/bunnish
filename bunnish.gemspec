@@ -53,7 +53,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/haracane/bunnish"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.24"
+  s.rubygems_version = "1.8.21"
   s.summary = "Command for AMQP access to Message Queue."
 
   if s.respond_to? :specification_version then
@@ -66,7 +66,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.4"])
-      s.add_development_dependency(%q<simplecov>, [">= 0"])
+      s.add_development_dependency(%q<rcov>, [">= 0"])
     else
       s.add_dependency(%q<json>, [">= 0"])
       s.add_dependency(%q<bunny>, [">= 0.8.0"])
@@ -74,7 +74,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
-      s.add_dependency(%q<simplecov>, [">= 0"])
+      s.add_dependency(%q<rcov>, [">= 0"])
     end
   else
     s.add_dependency(%q<json>, [">= 0"])
@@ -83,7 +83,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
-    s.add_dependency(%q<simplecov>, [">= 0"])
+    s.add_dependency(%q<rcov>, [">= 0"])
   end
 end
 
