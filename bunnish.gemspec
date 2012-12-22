@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "bunnish"
-  s.version = "0.0.9"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kenji Hara"]
-  s.date = "2012-12-16"
+  s.date = "2012-12-22"
   s.description = "Command for AMQP access to Message Queue."
   s.email = "haracane@gmail.com"
   s.executables = ["bunnish"]
@@ -53,7 +53,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/haracane/bunnish"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.17"
+  s.rubygems_version = "1.8.24"
   s.summary = "Command for AMQP access to Message Queue."
 
   if s.respond_to? :specification_version then
@@ -61,29 +61,29 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<json>, [">= 0"])
-      s.add_runtime_dependency(%q<bunny>, [">= 0"])
+      s.add_runtime_dependency(%q<bunny>, [">= 0.8.0"])
       s.add_development_dependency(%q<rspec>, ["~> 2.8.0"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<bundler>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.4"])
-      s.add_development_dependency(%q<rcov>, [">= 0"])
+      s.add_development_dependency(%q<simplecov>, [">= 0"])
     else
       s.add_dependency(%q<json>, [">= 0"])
-      s.add_dependency(%q<bunny>, [">= 0"])
+      s.add_dependency(%q<bunny>, [">= 0.8.0"])
       s.add_dependency(%q<rspec>, ["~> 2.8.0"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
-      s.add_dependency(%q<rcov>, [">= 0"])
+      s.add_dependency(%q<simplecov>, [">= 0"])
     end
   else
     s.add_dependency(%q<json>, [">= 0"])
-    s.add_dependency(%q<bunny>, [">= 0"])
+    s.add_dependency(%q<bunny>, [">= 0.8.0"])
     s.add_dependency(%q<rspec>, ["~> 2.8.0"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
-    s.add_dependency(%q<rcov>, [">= 0"])
+    s.add_dependency(%q<simplecov>, [">= 0"])
   end
 end
 
