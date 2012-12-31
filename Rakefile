@@ -47,3 +47,18 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+require "ci/reporter/rake/rspec"     # use this if you're using RSpec
+
+if RUBY_VERSION <= '1.8.7'
+  require "rcov"
+  RSpec::Core::RakeTask.new("spec:rcov") do |t|
+    t.rcov = true
+    t.rspec_opts = ["-c"]
+    t.rcov_opts = ["-x", "spec"]
+  end
+else
+  RSpec::Core::RakeTask.new("spec:rcov") do |t|
+    t.rspec_opts = ["-v"]
+  end
+end
