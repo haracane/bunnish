@@ -1,3 +1,11 @@
+if RUBY_VERSION <= '1.8.7'
+else
+  require "simplecov"
+  require "simplecov-rcov"
+  SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+  SimpleCov.start
+end
+
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require "rspec"
