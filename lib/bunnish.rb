@@ -1,6 +1,13 @@
 require "rubygems"
 require "bunny"
 
+module Bunnish  
+end
+
+require "bunnish/command"
+require "bunnish/core"
+require "bunny_extensions"
+
 module Bunnish
   def self.parse_opts(argv)
     return Bunnish::Core::Common::parse_opts(argv)
@@ -33,5 +40,3 @@ module Bunnish
   end
 end
 
-require "bunnish/command"
-require "bunnish/core"
