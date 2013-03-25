@@ -17,6 +17,8 @@ module Bunnish::Core
       message_max = nil
       timeout = 1
       unit_size = nil
+      weight_second = 1
+      retry_max_count = 5
       min_size = nil
       current_all_flag = false
   
@@ -52,6 +54,10 @@ module Bunnish::Core
           exchange_name = argv.shift
         when '--unit-size'
           unit_size = argv.shift.to_i
+        when '--weight'
+          weight_second = argv.shift.to_f / 1000
+        when '--retry'
+          retry_max_count = argv.shift.to_i
         when '--log-label'
           log_label = argv.shift
           log_label = "[#{log_label}]"
@@ -102,6 +108,8 @@ module Bunnish::Core
         :ack=>ack,
         :exchange_name=>exchange_name,
         :unit_size=>unit_size,
+        :weight_second=>weight_second,
+        :retry_max_count=>retry_max_count,
         :raise_exception_flag=>raise_exception_flag,
         :delimiter=>delimiter,
         :log_label=>log_label,
