@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "bunnish"
-  s.version = "0.1.2"
+  s.version = "0.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kenji Hara"]
-  s.date = "2013-01-02"
+  s.date = "2013-03-25"
   s.description = "Command for AMQP access to Message Queue."
   s.email = "haracane@gmail.com"
   s.executables = ["bunnish"]
@@ -68,8 +68,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_development_dependency(%q<bundler>, [">= 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.4"])
-      s.add_development_dependency(%q<simplecov>, [">= 0"])
-      s.add_development_dependency(%q<simplecov-rcov>, [">= 0"])
+      s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_development_dependency(%q<ci_reporter>, [">= 1.7.0"])
       s.add_development_dependency(%q<flog>, [">= 3.2.0"])
     else
@@ -79,8 +78,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
       s.add_dependency(%q<bundler>, [">= 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
-      s.add_dependency(%q<simplecov>, [">= 0"])
-      s.add_dependency(%q<simplecov-rcov>, [">= 0"])
+      s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<ci_reporter>, [">= 1.7.0"])
       s.add_dependency(%q<flog>, [">= 3.2.0"])
     end
@@ -91,8 +89,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
     s.add_dependency(%q<bundler>, [">= 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.4"])
-    s.add_dependency(%q<simplecov>, [">= 0"])
-    s.add_dependency(%q<simplecov-rcov>, [">= 0"])
+    s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<ci_reporter>, [">= 1.7.0"])
     s.add_dependency(%q<flog>, [">= 3.2.0"])
   end
