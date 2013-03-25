@@ -9,6 +9,9 @@ module Bunnish::Command
       password = params[:password]
       durable = params[:durable]
       unit_size = params[:unit_size] || 10000
+      weight_second = params[:weight_second]
+      retry_max_count = params[:retry_max_count]
+      
       raise_exception_flag = params[:raise_exception_flag]
       ack = params[:ack]
       consumer_tag = params[:consumer_tag]
@@ -90,6 +93,7 @@ module Bunnish::Command
         Bunnish::Core::Common.output_log [log_stream], "INFO", "#{log_label} no messages in #{queue_name}(#{remain_count} messages, #{consumer_count} consumers)"
       else
         # subscribe to queue
+        retry_count = 0
         begin
           queue.subscribe(:ack=>ack, \
             :consumer_tag=>consumer_tag, \
@@ -107,13 +111,22 @@ module Bunnish::Command
                 break if min_size && remain_count <= total_count + min_size
               end
             end
+            retry_count = 0
           end
         rescue Exception=>e
-          if raise_exception_flag then
-            bunny.stop if bunny
-            raise e if raise_exception_flag
+          if retry_count < retry_max_count
+            Bunnish.logger.warn("(EXCEPTION)#{log_label} #{e.message}(#{e.class.name}): #{e.backtrace.map{|s| "  #{s}"}.join("\n")}")
+            Bunnish.logger.warn("#{log_label} retry(#{retry_count})")
+            retry_count += 1
+            sleep(weight_second)
+            retry
           else
-            Bunnish::Core::Common.output_log [log_stream],  "EXCEPTION", "#{log_label} #{e.message}(#{e.class.name}): #{e.backtrace.map{|s| "  #{s}"}.join("\n")}"
+            if raise_exception_flag then
+              bunny.stop if bunny
+              raise e if raise_exception_flag
+            else
+              Bunnish.logger.warn("(EXCEPTION)#{log_label} #{e.message}(#{e.class.name}): #{e.backtrace.map{|s| "  #{s}"}.join("\n")}")
+            end
           end
         end
       end
